@@ -1,9 +1,9 @@
-function [Xw w]=tftd(n,xn, ciclos)  
-% tftd -- Calcula la transformada de fourier en tiempo discreto.
+function [Xw w]=TFTD(n,xn, ciclos)  
+% TFTD -- Calcula la transformada de fourier en tiempo discreto.
 % 
 % Uso:
-%   [Xw w] = tftd(n, xn)
-%   [Xw w] = tftd(n, xn, ciclos)
+%   [Xw w] = TFTD(n, xn)
+%   [Xw w] = TFTD(n, xn, ciclos)
 %
 % * Argumentos *
 %       n: vector de tiempos.
@@ -18,7 +18,7 @@ function [Xw w]=tftd(n,xn, ciclos)
 % * Ejemplo básico *
 % n = -20 : 20;
 % xn = escalon(n+4) - escalon(n-4);
-% [Xw w] = tftd(n, xn, 3);
+% [Xw w] = TFTD(n, xn, 3);
 %
 % subplot(311); stem(n, xn); axis tight; grid on;
 % xlabel('muestras','fontsize',17); ylabel('x[n]','fontsize',17); 
