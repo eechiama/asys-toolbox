@@ -1,8 +1,8 @@
-function [Xw w]=dft(n,xn)
-% dft -- Calcula la transformada discreta de fourier.
+function [Xw w]=DFT(n,xn)
+% DFT -- Calcula la transformada discreta de fourier.
 % 
 % Uso:
-%   [Xw w] = dft(n, xn)
+%   [Xw w] = DFT(n, xn)
 %
 % * Argumentos *
 %       n: vector de tiempos.
@@ -15,7 +15,7 @@ function [Xw w]=dft(n,xn)
 % * Ejemplo básico *
 % n = -20 : 20;
 % xn = escalon(n+4) - escalon(n-4);
-% [Xw w] = dft(n, xn);
+% [Xw w] = DFT(n, xn);
 %
 % subplot(311); stem(n, xn); axis tight; grid on;
 % xlabel('muestras','fontsize',17); ylabel('x[n]','fontsize',17); 
