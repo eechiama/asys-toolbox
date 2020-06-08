@@ -1,19 +1,24 @@
-% SEF -- Calcula los coeficientes Cn y C0 de la Serie Exponencial de Fourier,
-%	 para una señal periódica.
+% SEF -- Calcula los coeficientes Cn y C0 de la Serie Exponencial de Fourier de una señal periódica.
+%
+%	Cn = SEF(t, ft, T0, N)
+%
+% Argumentos
+% ==========
+%
+%	t:	vector de tiempo correspondiente a 1 ciclo de la señal.
+%	ft:	vector de valores de 1 ciclo de la señal.
+%	T0:	periódo de la señal.
+%	N:	cantidad (Armónicas + Fundamental) de coeficientes a calcular.
+%
+% Retorna
+% =======
+%
+%	Cn: coeficientes de la serie exponencial de fourier.
+%
+% Detalle
+% =======
 %
 % El valor medio C0 se encuentra en el elemento C(N).
-%
-% Uso:
-%   Cn = SEF( t, ft, T0, N )
-%
-% * Argumentos *
-%     t: vector de tiempo correspondiente a 1 ciclo de la señal.
-%    ft: vector de valores de 1 ciclo de la señal.
-%    T0: Periódo de la señal.
-%     N: Cantidad (Armónicas + Fundamental) a calcular.
-%
-% * Retorna *
-%    Cn: Coeficientes de la serie exponencial de fourier.
 %
 function [Cn]=SEF(t,ft,T0,N)
 w0=2*pi/T0;

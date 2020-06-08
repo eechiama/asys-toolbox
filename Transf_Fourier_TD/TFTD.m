@@ -1,21 +1,30 @@
-function [Xw w]=TFTD(n,xn, ciclos)  
 % TFTD -- Calcula la transformada de fourier en tiempo discreto.
-% 
-% Uso:
-%   [Xw w] = TFTD(n, xn)
-%   [Xw w] = TFTD(n, xn, ciclos)
 %
-% * Argumentos *
-%       n: vector de tiempos.
-%      xn: vector de valores a transformar.
-%  ciclos: (opcional) cantidad de períodos a calcular del espectro.
-%          Si no se especifica, por defecto se calcula 1 solo período. 
+%	[Xw, w] = TFTD(n, xn)
+%	[Xw, w] = TFTD(n, xn, ciclos)
 %
-% * Retorna *
-%  Xw: vector de la transformada.
-%   w: vector de frecuencia angular.
+% Argumentos
+% ==========
 %
-% * Ejemplo básico *
+%	n:	vector de tiempos.
+%	xn:	vector de muestras a transformar.
+%	ciclos:	cantidad de períodos a calcular del espectro.
+%
+% Retorna
+% =======
+%
+%	Xw:	vector de la transformada.
+%	w:	vector de frecuencia angular.
+%
+% Detalle
+% =======
+%
+% El 3er argumento 'ciclos' es opcional.
+% Si no se lo especifica, por defecto se calcula 1 solo período del espectro.
+%
+% Ejemplo básico
+% ==============
+%
 % n = -20 : 20;
 % xn = escalon(n+4) - escalon(n-4);
 % [Xw w] = TFTD(n, xn, 3);
@@ -30,7 +39,8 @@ function [Xw w]=TFTD(n,xn, ciclos)
 % subplot(313); plot(w, angle(Xw) ); axis tight; grid on;
 % xlabel('\Omega','fontsize',17);
 % ylabel('\phi(X(\Omega))', 'fontsize', 17');
-
+%
+function [Xw w]=TFTD(n,xn, ciclos)  
 if nargin == 2
    ciclos = 1;
 elseif nargin > 3 || nargin < 2

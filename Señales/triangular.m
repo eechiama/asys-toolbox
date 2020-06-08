@@ -1,46 +1,40 @@
 % triangular -- Genera señal triangular y su vector de tiempo correspondiente.
-% ==========
 %
-%		ft = triangular( T0, ciclos, dt )
-%		ft = triangular( T0, ciclos, dt, start )
-%
-% El usuario especifica el período de la señal, la cantidad de ciclos de ella, y
-% el paso temporal a utilizar.
-%
-% Además, con el 4to argumento (opcional) puede elegirse que la señal comienze en t=0 (default)
-% o que comienze en tiempos negativos.
-%
-% Si la cantidad de ciclos especificada es un número entero, entonces en t=0 siempre se dará el
-% comienzo de un nuevo ciclo, sin importar que opción se haya elegido respecto a tiempos positivos
-% o negativos.
-%
-% Si la cantidad de ciclos especificada no es un número entero, entonces ya no necesariamente
-% en t=0 comenzará un ciclo.
+%	ft = triangular(T0, ciclos, dt)
+%	ft = triangular(T0, ciclos, dt, start)
 %
 % Argumentos
 % ==========
 %
-%	T0: período deseado de la señal generada.
-%
+%	T0:	período deseado de la señal generada.
 %	ciclos: ciclos deseados de la señal generada.
-%
-%	dt: paso temporal para el vector de tiempos
-%
-%	start:
-%		'cero' (default): señal y vector de tiempo comienzan en t=0.
-%
-%		'neg+': señal y tiempo comenzarán en valores negativos.
-%		si ciclos es impar, habrá un ciclo más en tiempos positivos.
-%
-%		'neg-': señal y tiempo comenzarán en valores negativos.
-%		si ciclos es impar, habrá un ciclo más en tiempos negativos.
+%	dt:	paso temporal para el vector de tiempos.
+%	start:	determina en qué valores de tiempo comienza la señal.
 %
 % Retorna
 % =======
 %
-%	xt: vector de valores de la señal generada.
+%	xt:	vector de valores de la señal generada.
+%	t:	vector temporal generado.
 %
-%	t: vector temporal generado.
+% Detalle
+% =======
+%
+% El 4to argumento ('start') es opcional. Sus posibles valores son:
+%
+%	'cero': comienza en t=0. (default)
+%	
+%	'neg+': comienza en valores de tiempo negativos.
+%		si 'ciclos' es impar, habrá un ciclo más en tiempos positivos.
+%
+%	'neg-': comienza en valores negativos.
+%		si 'ciclos' es impar, habrá un ciclo más en tiempos negativos.
+%
+% Si la cantidad de ciclos especificada es un número entero entonces en t=0 siempre se dará el
+% comienzo de un nuevo ciclo. Esto es sin importar qué valor de 'start' se haya especificado.
+%
+% Si la cantidad de ciclos especificada no es un número entero, entonces ya no necesariamente
+% en t=0 comenzará un ciclo.
 %
 function [xt, t] = triangular(T0,ciclos,dt,start)
 

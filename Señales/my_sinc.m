@@ -1,20 +1,22 @@
-% my_sinc -- Devuelve función sinc con frecuencia angular requerida.
+% my_sinc -- Genera función sinc con frecuencia angular requerida.
 %
-%   Notar que en el límite t -> 0 resulta f(t) = 1.
+%	ft = my_sinc(t, w)
 %
-% * Uso: *
-%  
-%             ft = my_sinc( t, w )
+% Argumentos
+% ==========
 %
-% * Argumentos *
+%	t: vector de valores del dominio temporal.
+%	w: frecuencia angular requerida para la sinc.
 %
-%         t: vector de valores del dominio temporal.
+% Retorna
+% =======
 %
-%         w: frecuencia angular requerida para la sinc.
+%	ft: vector de valores de la función sinc requerida
 %
-% * Retorna *
+% Detalle
+% =======
 %
-%        ft: vector de valores de la función sinc requerida
+% Notar que en el límite t -> 0 resulta f(t) = 1.
 %
 function ft = my_sinc(t, w)
   ft = sin(w*t)./(w*t);

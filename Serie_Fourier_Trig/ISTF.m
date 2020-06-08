@@ -1,19 +1,24 @@
-% inversa_fourier -- Calcula la Serie de Fourier de la señal periódica 'ft'.
+% ISTF -- Transformada inversa de la Serie Trigonométrica de Fourier.
 %
-% Uso:
-%   serie = inversa_fourier( N, t, a0, an, bn, T0 )
+%	serie = ISTF(N, t, a0, an, bn, T0)
 %
-% * Argumentos *
-%     N: cantidad de coeficientes a calcular.
-%     t: vector de tiempos correspondiente al tiempo que querramos
-%        reconstruír de la señal.
-%    a0, an, bn:  coeficientes obtenidos de las funciones:
-%                'coeff_a0', 'coeff_an', 'coeff_bn'
-%    T0: período de la señal original.
+% Argumentos
+% ==========
 %
-% * Retorna *
-%    serie: vector de valores de la Serie Trigonométrica de Fourier
-function serie = inversa_fourier( N, t, a0, an, bn, T0)
+%	N:	cantidad de coeficientes a calcular.
+%	t:	vector de tiempos correspondiente al tiempo que
+%		querramos reconstruír de la señal.
+%	a0:	coeficiente obtenido de la función 'STF_a0'.
+%	an:	coeficientes obtenidos de la función 'STF_an'.
+%	bn:	coeficientes obtenidos de la función 'STF_bn'.
+%	T0:	período de la señal original.
+%
+% Retorna
+% =======
+%
+%	serie: vector de valores de la Serie Trigonométrica de Fourier
+%
+function serie = ISTF( N, t, a0, an, bn, T0)
   
 %  T0 = t(end)-t(1);
   

@@ -1,18 +1,28 @@
-function [Xw w]=DFT(n,xn)
 % DFT -- Calcula la transformada discreta de fourier.
-% 
-% Uso:
-%   [Xw w] = DFT(n, xn)
 %
-% * Argumentos *
-%       n: vector de tiempos.
-%      xn: vector de valores a transformar.
+%	[Xw w] = DFT(n, xn)
 %
-% * Retorna *
-%      Xw: vector de la transformada.
-%       w: vector de frecuencia angular.
+% Argumentos
+% ==========
 %
-% * Ejemplo básico *
+%	n:	vector de tiempos.
+%	xn:	vector de muestras a transformar.
+%
+% Retorna
+% =======
+%
+%	Xw:	vector de la transformada.
+%	w:	vector de frecuencia angular.
+%
+% Detalle
+% ========
+%
+% Aunque el espectro de la Transformada Discreta de Fourier es discreto y periódico,
+% la función 'DFT' retorna solamente 1 ciclo del espectro.
+%
+% Ejemplo básico
+% ==============
+%
 % n = -20 : 20;
 % xn = escalon(n+4) - escalon(n-4);
 % [Xw w] = DFT(n, xn);
@@ -27,6 +37,8 @@ function [Xw w]=DFT(n,xn)
 % subplot(313); stem(w, angle(Xw) ); axis tight; grid on;
 % xlabel('k . \Omega_0','fontsize',17);
 % ylabel('\phi(C_k)', 'fontsize', 17');
+%
+function [Xw, w] = DFT(n,xn)
 N0=length(xn);
 w0=2*pi/N0;
 w=(0:N0-1)*w0;

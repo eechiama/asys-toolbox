@@ -1,45 +1,43 @@
-% E_TFTC_INT -- Calcula los índices del vector 'Fw' para los cuales
-%     se verifica que energéticamente se obtiene el intervalo más
-%     cercano a un porcenje determinado.
+% ENERGIA_TFTC_INT -- Calcula los índices del vector 'Fw' que determinan un
+%			dado porcentaje de la energía total.
 %
-%   La función busca el intervalo que genera el contenido energético con menor
+%	[interval_percent, interval_idx] = ENERGIA_TFTC_INT(Fw, dw, energ_total, percent)
+%
+% Argumentos
+% ==========
+%
+%	Fw:	vector de valores de la función transformada al dominio frecuencial.
+%	dw:	paso frecuencial con el cual se obtuvo el vector Fw con la función 'TFTC'.
+%	energ_total:	energía total de la señal. generalmente, el resultado de
+%			calcular la energía en el dominio temporal con 'ENERGIA'.
+%	percent: porcentaje energético requerido.
+%
+% Retorna
+% =======
+%
+%	interval_percent:	El porcentaje energético obtenido para el intervalo determinado por
+%				interval_idx.
+%	interval_idx:		Vector de 2 elementos que contiene los índice mínimo y máximo
+%				que sobre el vector 'Fw' especifican el intervalo que genera
+%				el requerido porcentaje energético.
+%
+% Detalle
+% =======
+%
+% La función busca el intervalo que genera el contenido energético de menor
 % error con respecto al porcentaje requerido.
+% Por lo tanto, nótese que este resultado puede estar tanto por arriba como por
+% debajo del porcentaje especificado.
 %
-%   Por lo tanto, nótese que este resultado puede estar tanto por arriba como por
-% debajo del porcentaje requerido.
-%
-% * Uso: *
-%  
-% [interval_percent, interval_idx] = E_TFTC_INT( Fw, dw, energy_t, percent )
-%
-% * Argumentos *
-%
-%         Fw: vector de valores de la función transformada al dominio frecuencial.
-%
-%         dw: paso frecuencial con el cual se obtuvo el vector Fw (al usar TFTC()).
-%
-%   energy_t: Energía total de la señal. Generalmente, el resultado de calcular
-%             la energía en el dominio temporal.
-%
-%    percent: Porcentaje energético requerido.
-%
-% * Retorna *
-%                 
-%   interval_percent: El porcentaje energético obtenido para el intervalo determinado por
-%                     interval_idx.
-%
-%       interval_idx: Vector de 2 elementos que contiene los índice mínimo y máximo
-%                     que sobre el vector 'Fw' especifican el intervalo que genera
-%                     el requerido porcentaje energético.
-%
-% * Ejemplo Básico *
+% Ejemplo Básico
+% ==============
 %
 %    dt = 0.01; t = -5 : dt : 5;
 %    ft = rampa(t) - rampa(t-1) - escalon(t-1);
 %    energy_t = sum( abs(ft).^2 ) * dt;
 %    dw = 0.01; WMAX = 2*pi*10;
 %    [Fw, w]= TFTC(t, ft, WMAX, dw);
-%    [percent, idx] = E_TFTC_INT(Fw, dw, energy_t, 95);
+%    [percent, idx] = ENERGIA_TFTC_INT(Fw, dw, energy_t, 95);
 %    interv_freq = w(idx(1):idx(2))/(2*pi);
 %    interv_Fw = Fw(idx(1):idx(2));
 %    
@@ -53,14 +51,14 @@
 %    xlabel('f [Hz]', 'fontsize', 15); ylabel('|F(w)|', 'fontsize', 15);
 %    xlim([w(1)/(2*pi), w(end)/(2*pi)]); ylim([0, max(abs(Fw))]);
 %
-function [interval_percent, interval_idx] = E_TFTC_INT(Fw, dw, energy_t, percent)
+function [interval_percent, interval_idx] = ENERGIA_TFTC_INT(Fw, dw, energ_total, percent)
   
   idx_middle = ceil( length(Fw)/2 );
   idx = 0;
   obtained_percent_highBound = 0;
-  while( idx_middle + idx <  length(Fw))
-    energ = E_TFTC(Fw(idx_middle-idx: idx_middle+idx),dw);
-    obtained_percent = 100*(energ/energy_t);
+  while( idx_middle + idx < length(Fw))
+    energ = ENERGIA_TFTC(Fw(idx_middle-idx: idx_middle+idx),dw);
+    obtained_percent = 100*(energ/energ_total);
     if(obtained_percent >= percent)
       obtained_percent_highBound = obtained_percent;
       break
