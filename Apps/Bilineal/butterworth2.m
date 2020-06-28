@@ -69,14 +69,14 @@ figure(6),impz(num,den,fs), title('h[n]')
 % Rta en frecuencia (lineal)
 [HHs, ws]=freqs(num,den);
 figure, title('|H(s)| y \phi(H(s))')
-subplot(211),plot(w/2/pi,abs(HH)),axis tight,xlabel('Frecuencia [Hz]'), ylabel('|H(w)|')
-subplot(212),plot(w/2/pi,angle(HH)),axis tight,xlabel('Frecuencia [Hz]'), ylabel('\phi\{H(w)\}')
+subplot(211),plot(ws/2/pi,abs(HHs)),axis tight,xlabel('Frecuencia [Hz]'), ylabel('|H(w)|')
+subplot(212),plot(ws/2/pi,angle(HHs)),axis tight,xlabel('Frecuencia [Hz]'), ylabel('\phi\{H(w)\}')
 
 % Respuesta en frecuencia digital
 [HHz, wz]=freqz(numz,denz);
 figure(5), title('|H(z)| y \phi\{H(z)\}')
-subplot(211),plot(w,abs(HH)),axis tight,xlabel('Frecuencia angular [1/s]'), ylabel('|H(w)|'), grid
-subplot(212),plot(w,angle(HH)),axis tight,xlabel('Frecuencia angular [1/s]'), ylabel('\phi\{H(z)\}'), grid
+subplot(211),plot(wz,abs(HHz)),axis tight,xlabel('Frecuencia angular [1/s]'), ylabel('|H(w)|'), grid
+subplot(212),plot(wz,angle(HHz)),axis tight,xlabel('Frecuencia angular [1/s]'), ylabel('\phi\{H(z)\}'), grid
 
 figure,
 plot(ws/2/pi,abs(HHs),wz*fs/2/pi,abs(HHz))
@@ -91,9 +91,10 @@ ax2 = subplot(211), plot(f,abs(fw(1:length(y)/2))), grid
 title('Espectro original'), xlabel('Frecuencia [Hz]')
 ax1 = subplot(212), plot(f,abs(fw(1:length(fw)/2)),f,abs(fy(1:length(y)/2))), grid
 title('Espectro original y filtrado'), xlabel('Frecuencia [Hz]')
-linkaxes([ax1 ax2])
+linkaxes([ax1 ax2]);
 
-pause()
+%% Audio Original
 sound(x,fs),
-pause()
+
+%% Audio Filtrado
 sound(y, fs)
