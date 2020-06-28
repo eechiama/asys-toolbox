@@ -30,7 +30,7 @@ wc = fc*2*pi;                   % Omega de corte
 
 %num = [1 0 0];                   % Pasa-Altos;  fc recomendada 5kHz
 num = (wc)^2;                  % Pasa-Bajos;  fc recomendada 1kHz
-den = [1 2*cos(pi/4)*wc wc^2];
+den = [1 sqrt(2)*wc wc^2];
 Hs = tf(num,den);                 % Función transferencia de Butterworth de 2do orden
 
 % Diagrama de polos y ceros
@@ -41,39 +41,45 @@ a=findobj(gca,'type','line'); set(a(2:end),'linewidth',3), set(a(2:end),'markers
 options = bodeoptions; options.FreqUnits = 'Hz';
 figure, bode(Hs, options)
 
-% Rta en frecuencia (lineal)
-[HH, w]=freqs(num,den);
-figure, title('|H(s)| y \phi(H(s))')
-subplot(211),plot(w/2/pi,abs(HH)),axis tight,xlabel('Frecuencia [Hz]'), ylabel('|H(w)|')
-subplot(212),plot(w/2/pi,angle(HH)),axis tight,xlabel('Frecuencia [Hz]'), ylabel('\phi\{H(w)\}')
-
 % Respuesta al Impulso
 figure, impulse(num,den), title('h(t)')
 
 
 %%
-% %% 1) Obtengo Wc DIGITAL;
-omegac = wc/fs;
-wc_d = 2*fs*tan(omegac/2);                  % Omega de corte digital
-disp (['\varomega_c: ' num2str(omegac)])
-disp (['\varomega_c: ' num2str(wc)])
+%Obtengo Wc DIGITAL;
+omegac = wc/fs;                               % Omega de corte "esperada"
+omegac_bil = 2*atan(omegac/2);                % Omega de corte real bilineal
+fc_bil = omegac_bil *fs/2/pi;
+disp (['Frecuencia de corte ideal: ' num2str(fc)])
+disp (['Frecuencia de corte bilineal: ' num2str(fc_bil)])
 
-%% Calculo Bilinear -> Paso de H(s) ->H(z)
+%% Calculo Bilineal -> Paso de H(s) ->H(z)
 [numz, denz] = bilinear(num,den,fs);        % Transformada bilineal
-Hz = tf(numz,denz,fs);                      % Sistema digital
-%% Grafico y Filtro digital
+Hz = tf(numz,denz,1/fs);                      % Sistema digital
+
 % Diagrama Polos y Ceros
 figure,pzmap(Hz), title('PZ H(z)')
 a=findobj(gca,'type','line'); set(a(2:end),'linewidth',3), set(a(2:end),'markersize',10),
 
-% Respuesta en frecuencia
-[HH, w]=freqz(numz,denz);
+% Respuesta al Impulso
+figure(6),impz(num,den,fs), title('h[n]')
+
+%% Grafico y Filtro digital
+
+% Rta en frecuencia (lineal)
+[HHs, ws]=freqs(num,den);
+figure, title('|H(s)| y \phi(H(s))')
+subplot(211),plot(w/2/pi,abs(HH)),axis tight,xlabel('Frecuencia [Hz]'), ylabel('|H(w)|')
+subplot(212),plot(w/2/pi,angle(HH)),axis tight,xlabel('Frecuencia [Hz]'), ylabel('\phi\{H(w)\}')
+
+% Respuesta en frecuencia digital
+[HHz, wz]=freqz(numz,denz);
 figure(5), title('|H(z)| y \phi\{H(z)\}')
 subplot(211),plot(w,abs(HH)),axis tight,xlabel('Frecuencia angular [1/s]'), ylabel('|H(w)|'), grid
 subplot(212),plot(w,angle(HH)),axis tight,xlabel('Frecuencia angular [1/s]'), ylabel('\phi\{H(z)\}'), grid
 
-% Respuesta al Impulso
-figure(6),impz(num,den,fs), title('h[n]')
+figure,
+plot(ws/2/pi,abs(HHs),wz*fs/2/pi,abs(HHz))
 
 %%
 % Filtro el audio
