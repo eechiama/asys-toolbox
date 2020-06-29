@@ -4,12 +4,13 @@ clc, clear, close all
 %% Cargo un .mpr
 save_name = 'turn.mp3';             % Turn the page - Metallica
 [x, fs] = audioread(save_name);     % Carga el audio: x es el audio, fs la frecuencia de muestreo
-%sound(ft, Fs);                     % Reproduce el audio original
+%sound(x, fs);                      % Reproduce el audio original
 %pause;
 
 % Creación de vector de tiempo para graficar
-t = 0:1/fs:(length(x)-1)/fs;        % Vector de tiempo
-T = 1/fs;                           % Intervalo de tiempo de muestreo
+Ts = 1/fs;                        % Intervalo de tiempo de muestreo
+t = 0:Ts:(length(x)-1)/fs;        % Vector de tiempo
+
 
 fw = fft(x)/length(x);              % Espectro de la canción original
 
@@ -52,7 +53,7 @@ Hz = tf(numz,denz,1/fs)                         % Sistema digital
 
 % Respuesta al Impulso
 [hn, nn] = impulse(Hz);
-figure(6); title('h[n]'), stem(nn, hn);
+figure(6);  stem(nn*fs, hn); title('h[n]'), xlabel('Muestras')
 
 % Diagrama Polos y Ceros
 figure ,pzmap(Hz), title('Diagrama de polos y ceros H(z)')
@@ -75,7 +76,7 @@ disp (['Frecuencia de corte bilineal: ' num2str(fc_bil)])
 
 figure
 plot(ws/2/pi, abs(HHs), '--b', wz*fs/2/pi, abs(HHz),'r','linewidth',2),  grid
-legend('Filtro analógico','Filtro digital')
+legend('Filtro analógico','Filtro digital'), xlabel('Frecuencia [Hz]')
 
 %%
 % Filtro el audio
@@ -90,7 +91,28 @@ title('Espectro original y filtrado'), xlabel('Frecuencia [Hz]')
 linkaxes([ax1 ax2]);
 
 %% Audio Original
-sound(x,fs),
+sound(x,fs),        % Prestar atención al crush y hi-hat
 
 %% Audio Filtrado
-sound(y, fs)
+sound(y, fs)        % No hay hi-hat, crush apenas suena
+                    % Con pasa altos en 5k solo se escucha la voz y los
+                    % platos
+
+
+
+
+
+
+
+
+
+%% Short version
+fc = 5e3;                       % Frecuencia de corte
+wc = fc*2*pi;                   % Omega de corte
+
+num = [1 0 0];                  % Pasa-Altos;  fc recomendada 5kHz
+% num = (wc)^2;                   % Pasa-Bajos;  fc recomendada 1kHz
+den = [1 sqrt(2)*wc wc^2];      % Denominador de un butterworth 2do orden
+[numz, denz] = bilinear(num,den,fs);            % Transformada bilineal
+y = filter(numz,denz,x);                  % Audio filtrado con filtro digital
+sound(y, fs)        
