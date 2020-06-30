@@ -22,7 +22,7 @@ function varargout = gui_butterworth(varargin)
 
 % Edit the above text to modify the response to help gui_butterworth
 
-% Last Modified by GUIDE v2.5 29-Jun-2020 19:07:38
+% Last Modified by GUIDE v2.5 30-Jun-2020 20:40:13
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -73,12 +73,14 @@ axes(handles.axes1);
 plot(handles.f, abs(handles.xw(1:handles.N))), grid on;
 xlim([0 fs/2]); title('FFT'), xlabel('Frecuencia [kHz]');
 ax1 = gca;
-ax1.XTick = [0 2500 5000 7500 10000 12500 15000 17500 20000]
-ax1.XTickLabel = [0 2.5 5 7.5 10 12.5 15 17.5 20]
+ax1.XTick = [0 2500 5000 7500 10000 12500 15000 17500 20000];
+ax1.XTickLabel = [0 2.5 5 7.5 10 12.5 15 17.5 20];
 
-[HHs, ws] = freqs(handles.wc^2, handles.den);                   % Rta en frecuencia del filtro analógico
+handles.plot2 = 'rta_freq';
+
+[HHs, ws] = freqs(handles.wc^2, handles.den);                   
 [numz,denz] = bilinear(handles.wc^2, handles.den, fs);
-[HHz, wz] = freqz(numz,denz);                 % Rta en frecuencia del filtro digital
+[HHz, wz] = freqz(numz,denz);                
 
 axes(handles.axes3);
 plot(ws/2/pi, abs(HHs), '--b', wz*fs/2/pi, abs(HHz),'r','linewidth',2),  grid
@@ -86,9 +88,9 @@ legend('Filtro analógico','Filtro digital'), xlabel('Frecuencia [Hz]')
 xlabel('Frecuencia [kHz]'); xlim([0 fs/2]); ylim([0 1])
 title('Rta en frecuencia del Filtro')
 ax2 = gca;
-ax2.XTick = [0 2500 5000 7500 10000 12500 15000 17500 20000]
-ax2.XTickLabel = [0 2.5 5 7.5 10 12.5 15 17.5 20]
-ax2.YTick = [0 0.25 0.5 0.707 1]
+ax2.XTick = [0 2500 5000 7500 10000 12500 15000 17500 20000];
+ax2.XTickLabel = [0 2.5 5 7.5 10 12.5 15 17.5 20];
+ax2.YTick = [0 0.25 0.5 0.707 1];
 
 axes(handles.axes4);
 matlabImage = imread('gui_butter_img.jpg');
@@ -151,15 +153,7 @@ hold off;
 [HHz, wz] = freqz(numz,denz);                 
 fs = handles.fs;
 
-axes(handles.axes3);
-plot(ws/2/pi, abs(HHs), '--b', wz*fs/2/pi, abs(HHz),'r','linewidth',2),  grid
-legend('Filtro analógico','Filtro digital'), xlabel('Frecuencia [Hz]')
-xlabel('Frecuencia [kHz]'); xlim([0 fs/2]); ylim([0 1])
-title('Rta en frecuencia del Filtro')
-ax2 = gca;
-ax2.XTick = [0 2500 5000 7500 10000 12500 15000 17500 20000]
-ax2.XTickLabel = [0 2.5 5 7.5 10 12.5 15 17.5 20]
-ax2.YTick = [0 0.25 0.5 0.707 1]
+plot_plot2(handles)
 
 
 function frec_c_Callback(hObject, eventdata, handles)
@@ -174,12 +168,11 @@ handles.wc = handles.fc * 2 * pi;
 handles.den = [1 sqrt(2)*handles.wc (handles.wc)^2]
 if handles.HPF.Value == 1
     handles.num = [1 0 0];
-    disp('hpf')
 else
     handles.num = [handles.wc^2];
-    disp('lpf')
 end
 guidata(hObject, handles);
+plot_plot2(handles)
 
 
 
@@ -207,6 +200,7 @@ else
     handles.num = [1 0 0];
 end
 guidata(hObject, handles);
+plot_plot2(handles)
 
 
 % --- Executes during object creation, after setting all properties.
@@ -228,3 +222,55 @@ function pushbutton3_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 clear sound;
+
+
+% --- Executes when selected object is changed in uibuttongroup_plot.
+function uibuttongroup_plot_SelectionChangedFcn(hObject, eventdata, handles)
+% hObject    handle to the selected object in uibuttongroup_plot 
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+if hObject == handles.rb_rta_freq
+    handles.plot2 = 'rta_freq';
+elseif hObject == handles.rb_pzmap
+    handles.plot2 = 'pzmap';
+else
+    handles.plot2 = 'bode';
+end
+guidata(hObject, handles);
+plot_plot2(handles)
+
+
+
+function plot_plot2(handles)
+fs = handles.fs;
+
+[HHs, ws] = freqs(handles.num, handles.den);
+Hs = tf(handles.num, handles.den);
+
+[numz,denz] = bilinear(handles.num, handles.den, fs);
+[HHz, wz] = freqz(numz,denz);
+Hz = tf(numz,denz,1/fs);
+axes(handles.axes3);
+
+if strcmp(handles.plot2,'rta_freq')
+    plot(ws/2/pi, abs(HHs), '--b', wz*fs/2/pi, abs(HHz),'r','linewidth',2),  grid
+    legend('Filtro analógico','Filtro digital'), xlabel('Frecuencia [Hz]')
+    xlabel('Frecuencia [kHz]'); xlim([0 fs/2]); ylim([0 1])
+    title('Rta en frecuencia del Filtro')
+    ax2 = gca;
+    ax2.XTick = [0 2500 5000 7500 10000 12500 15000 17500 20000];
+    ax2.XTickLabel = [0 2.5 5 7.5 10 12.5 15 17.5 20];
+    ax2.YTick = [0 0.25 0.5 0.707 1];
+    
+elseif strcmp(handles.plot2,'pzmap')
+    pzmap(Hz); xlim([-2.5 2.5]); title('Polos y Ceros de H(z)')
+    
+elseif strcmp(handles.plot2,'bode')
+    [mag_s, phase_s, w_s] = bode(Hs);
+    [mag_z, phase_z, w_z] = bode(Hz);
+    mag_s = 20*log10(mag_s(:));
+    mag_z = 20*log10(mag_z(:));
+    semilogx(w_s/2/pi, mag_s,'b', w_z/2/pi, mag_z,'r', 'LineWidth',2);grid on;
+    axis([100 100e3 -80 0]); title('Diagramas de Bode');
+    legend('|H(s)|','|H(z)|'); xlabel('Frecuencia [Hz]');
+end
