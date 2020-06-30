@@ -90,8 +90,11 @@ ax2.XTick = [0 2500 5000 7500 10000 12500 15000 17500 20000]
 ax2.XTickLabel = [0 2.5 5 7.5 10 12.5 15 17.5 20]
 ax2.YTick = [0 0.25 0.5 0.707 1]
 
-
-
+axes(handles.axes4);
+matlabImage = imread('gui_butter_img.jpg');
+image(matlabImage)
+axis off
+axis image
 
 % Update handles structure
 guidata(hObject, handles);
