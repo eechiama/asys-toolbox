@@ -22,7 +22,7 @@ function varargout = gui_butterworth(varargin)
 
 % Edit the above text to modify the response to help gui_butterworth
 
-% Last Modified by GUIDE v2.5 30-Jun-2020 20:40:13
+% Last Modified by GUIDE v2.5 30-Jun-2020 23:49:48
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -102,6 +102,8 @@ axis image
 guidata(hObject, handles);
 set(handles.fs_disp,'string',num2str(fs))
 set(handles.disp_fcd, 'string',num2str(round(fs/pi*atan(pi*handles.fc/fs))))
+set(handles.slider2,'Value',(handles.fc/handles.fs*2));
+
 
 % UIWAIT makes gui_butterworth wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -176,7 +178,7 @@ end
 guidata(hObject, handles);
 plot_plot2(handles)
 set(handles.disp_fcd, 'string',num2str(round(fs/pi*atan(pi*handles.fc/fs))))
-
+set(handles.slider2,'Value',(handles.fc/handles.fs*2));
 
 
 
@@ -205,6 +207,8 @@ else
 end
 guidata(hObject, handles);
 plot_plot2(handles)
+fs = handles.fs;
+set(handles.disp_fcd, 'string',num2str(round(fs/pi*atan(pi*handles.fc/fs))))
 
 
 % --- Executes during object creation, after setting all properties.
@@ -277,4 +281,42 @@ elseif strcmp(handles.plot2,'bode')
     semilogx(w_s/2/pi, mag_s,'b', w_z/2/pi, mag_z,'r', 'LineWidth',2);grid on;
     axis([100 100e3 -80 0]); title('Diagramas de Bode');
     legend('|H(s)|','|H(z)|'); xlabel('Frecuencia [Hz]');
+end
+
+
+% --- Executes on slider movement.
+function slider2_Callback(hObject, eventdata, handles)
+% hObject    handle to slider2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+fs = handles.fs;
+handles.fc = get(hObject,'Value')*handles.fs/2;
+handles.wc = handles.fc*2*pi;
+handles.den = [1 sqrt(2)*handles.wc (handles.wc)^2]
+if handles.HPF.Value == 1
+    handles.num = [1 0 0];
+else
+    handles.num = [handles.wc^2];
+end
+
+string1 = sprintf('%d',round(handles.fc));
+set(handles.frec_c, 'String', string1);
+
+guidata(hObject, handles);
+plot_plot2(handles)
+set(handles.disp_fcd, 'string',num2str(round(fs/pi*atan(pi*handles.fc/fs))))
+
+
+% --- Executes during object creation, after setting all properties.
+function slider2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to slider2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
