@@ -101,6 +101,7 @@ axis image
 % Update handles structure
 guidata(hObject, handles);
 set(handles.fs_disp,'string',num2str(fs))
+set(handles.disp_fcd, 'string',num2str(round(fs/pi*atan(pi*handles.fc/fs))))
 
 % UIWAIT makes gui_butterworth wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -163,6 +164,7 @@ function frec_c_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of frec_c as text
 %        str2double(get(hObject,'String')) returns contents of frec_c as a double
+fs = handles.fs;
 handles.fc = str2double(get(hObject,'String'));
 handles.wc = handles.fc * 2 * pi;
 handles.den = [1 sqrt(2)*handles.wc (handles.wc)^2]
@@ -173,6 +175,8 @@ else
 end
 guidata(hObject, handles);
 plot_plot2(handles)
+set(handles.disp_fcd, 'string',num2str(round(fs/pi*atan(pi*handles.fc/fs))))
+
 
 
 
