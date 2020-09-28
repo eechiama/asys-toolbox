@@ -67,8 +67,8 @@ graficar_axes1(handles);
 graficar(handles);
 
 % Update handles structure
-set(handles.text9,'String','x(t) = escalon(t)')
-set(handles.text11,'String','h(t) = e^(-2t) * escalon(t)')
+set(handles.text9,'String','x(t) = u(t)')
+set(handles.text11,'String','h(t) = e^(-2t) * u(t)')
 guidata(hObject, handles);
 
 % UIWAIT makes gui_convolucion wait for user response (see UIRESUME)
@@ -99,13 +99,13 @@ xt_opt = get(hObject,'Value');
 
 if strcmp(xt_list(xt_opt),'Escalón')
     handles.xt = escalon(handles.t);
-    set(handles.text9,'String','x(t) = escalon(t)')
+    set(handles.text9,'String','x(t) = u(t)')
 elseif strcmp(xt_list(xt_opt),'Rampa')
     handles.xt = rampa(handles.t)-rampa(handles.t-1);
-    set(handles.text9,'String','x(t) = rampa(t) - rampa(t-1)')
+    set(handles.text9,'String','x(t) = rho(t) - rho(t-1)')
 else
     handles.xt = exp(-handles.t).*escalon(handles.t);
-    set(handles.text9,'String','x(t) = e^(-t) * escalon(t)')
+    set(handles.text9,'String','x(t) = e^(-t) * u(t)')
 end
 
 set(handles.slider1,'Value',0);
@@ -147,15 +147,15 @@ set(handles.text8,'String',num2str(handles.to,'%.2f'));
 if strcmp(ht_list(ht_opt),'Primer orden')
     handles.ht = exp(-2*handles.t).*escalon(handles.t);
     handles.ht_conv = exp(-2*(handles.to-handles.t)).*escalon(handles.to-handles.t);
-    set(handles.text11,'String','h(t) = e^(-2t) * escalon(t)')
+    set(handles.text11,'String','h(t) = e^(-2t) * u(t)')
 elseif strcmp(ht_list(ht_opt),'Segundo orden sobreamortiguado')
     handles.ht = 4*(-exp(-4*handles.t) + exp(-2*handles.t)).*escalon(handles.t);
     handles.ht_conv = 4*(-exp(-4*(handles.to-handles.t)) + exp(-2*(handles.to-handles.t))).*escalon((handles.to-handles.t));
-    set(handles.text11,'String','h(t) = 4 * [e^(-2t) - e^(-4t)] * escalon(t)')
+    set(handles.text11,'String','h(t) = 4 * [e^(-2t) - e^(-4t)] * u(t)')
 elseif strcmp(ht_list(ht_opt),'Segundo orden crítico')
     handles.ht = 9*exp(-3*handles.t) .* handles.t .*escalon(handles.t);
     handles.ht_conv = 9*exp(-3*(handles.to-handles.t)) .* (handles.to-handles.t) .* escalon((handles.to-handles.t));
-    set(handles.text11,'String','h(t) = 9 * t * e^(-3t) * escalon(t)')
+    set(handles.text11,'String','h(t) = 9 * t * e^(-3t) * u(t)')
 else
     handles.ht = 9*exp(-3*handles.t) .* sin(3*handles.t).* handles.t .*escalon(handles.t);
     handles.ht_conv = 9*exp(-3*(handles.to-handles.t)) .* sin(3*(handles.to-handles.t)) .* escalon(handles.to-handles.t);
