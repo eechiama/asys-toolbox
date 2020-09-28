@@ -58,17 +58,17 @@ handles.dt = 0.01;
 handles.tmax = 3;
 handles.tmin = -1;
 handles.t = handles.tmin : handles.dt : handles.tmax;
-handles.xt = u(handles.t);
-handles.ht = exp(-2*handles.t).*u(handles.t);
+handles.xt = escalon(handles.t);
+handles.ht = exp(-2*handles.t).*escalon(handles.t);
 handles.to = handles.tmin;
-handles.ht_conv = u(handles.to-handles.t);
+handles.ht_conv = escalon(handles.to-handles.t);
 
 graficar_axes1(handles);
 graficar(handles);
 
 % Update handles structure
-set(handles.text9,'String','x(t) = u(t)')
-set(handles.text11,'String','h(t) = e^(-2t) * u(t)')
+set(handles.text9,'String','x(t) = escalon(t)')
+set(handles.text11,'String','h(t) = e^(-2t) * escalon(t)')
 guidata(hObject, handles);
 
 % UIWAIT makes gui_convolucion wait for user response (see UIRESUME)
@@ -98,14 +98,14 @@ xt_list = get(hObject,'String');
 xt_opt = get(hObject,'Value');
 
 if strcmp(xt_list(xt_opt),'Escalón')
-    handles.xt = u(handles.t);
-    set(handles.text9,'String','x(t) = u(t)')
+    handles.xt = escalon(handles.t);
+    set(handles.text9,'String','x(t) = escalon(t)')
 elseif strcmp(xt_list(xt_opt),'Rampa')
-    handles.xt = rho(handles.t)-rho(handles.t-1);
-    set(handles.text9,'String','x(t) = rho(t) - rho(t-1)')
+    handles.xt = rampa(handles.t)-rampa(handles.t-1);
+    set(handles.text9,'String','x(t) = rampa(t) - rampa(t-1)')
 else
-    handles.xt = exp(-handles.t).*u(handles.t);
-    set(handles.text9,'String','x(t) = e^(-t) * u(t)')
+    handles.xt = exp(-handles.t).*escalon(handles.t);
+    set(handles.text9,'String','x(t) = e^(-t) * escalon(t)')
 end
 
 set(handles.slider1,'Value',0);
@@ -145,21 +145,21 @@ handles.to = handles.tmin;
 set(handles.text8,'String',num2str(handles.to,'%.2f'));
 
 if strcmp(ht_list(ht_opt),'Primer orden')
-    handles.ht = exp(-2*handles.t).*u(handles.t);
-    handles.ht_conv = exp(-2*(handles.to-handles.t)).*u(handles.to-handles.t);
-    set(handles.text11,'String','h(t) = e^(-2t) * u(t)')
+    handles.ht = exp(-2*handles.t).*escalon(handles.t);
+    handles.ht_conv = exp(-2*(handles.to-handles.t)).*escalon(handles.to-handles.t);
+    set(handles.text11,'String','h(t) = e^(-2t) * escalon(t)')
 elseif strcmp(ht_list(ht_opt),'Segundo orden sobreamortiguado')
-    handles.ht = 4*(-exp(-4*handles.t) + exp(-2*handles.t)).*u(handles.t);
-    handles.ht_conv = 4*(-exp(-4*(handles.to-handles.t)) + exp(-2*(handles.to-handles.t))).*u((handles.to-handles.t));
-    set(handles.text11,'String','h(t) = 4 * [e^(-2t) - e^(-4t)] * u(t)')
+    handles.ht = 4*(-exp(-4*handles.t) + exp(-2*handles.t)).*escalon(handles.t);
+    handles.ht_conv = 4*(-exp(-4*(handles.to-handles.t)) + exp(-2*(handles.to-handles.t))).*escalon((handles.to-handles.t));
+    set(handles.text11,'String','h(t) = 4 * [e^(-2t) - e^(-4t)] * escalon(t)')
 elseif strcmp(ht_list(ht_opt),'Segundo orden crítico')
-    handles.ht = 9*exp(-3*handles.t) .* handles.t .*u(handles.t);
-    handles.ht_conv = 9*exp(-3*(handles.to-handles.t)) .* (handles.to-handles.t) .* u((handles.to-handles.t));
-    set(handles.text11,'String','h(t) = 9 * t * e^(-3t) * u(t)')
+    handles.ht = 9*exp(-3*handles.t) .* handles.t .*escalon(handles.t);
+    handles.ht_conv = 9*exp(-3*(handles.to-handles.t)) .* (handles.to-handles.t) .* escalon((handles.to-handles.t));
+    set(handles.text11,'String','h(t) = 9 * t * e^(-3t) * escalon(t)')
 else
-    handles.ht = 9*exp(-3*handles.t) .* sin(3*handles.t).* handles.t .*u(handles.t);
-    handles.ht_conv = 9*exp(-3*(handles.to-handles.t)) .* sin(3*(handles.to-handles.t)) .* u(handles.to-handles.t);
-    set(handles.text11,'String','h(t) = 9 * e^(-3t) * sin(3t) * u(t)')
+    handles.ht = 9*exp(-3*handles.t) .* sin(3*handles.t).* handles.t .*escalon(handles.t);
+    handles.ht_conv = 9*exp(-3*(handles.to-handles.t)) .* sin(3*(handles.to-handles.t)) .* escalon(handles.to-handles.t);
+    set(handles.text11,'String','h(t) = 9 * e^(-3t) * sin(3t) * escalon(t)')
 end
 
 guidata(hObject, handles);
@@ -192,13 +192,13 @@ handles.to = handles.tmin + val*(handles.tmax - handles.tmin);
 set(handles.text8,'String',num2str(handles.to,'%.2f'));
 
 if get(handles.popupmenu2,'Value')==1
-    handles.ht_conv = exp(-2*(handles.to-handles.t)).*u(handles.to-handles.t);
+    handles.ht_conv = exp(-2*(handles.to-handles.t)).*escalon(handles.to-handles.t);
 elseif get(handles.popupmenu2,'Value')==2
-    handles.ht_conv = 4*(-exp(-4*(handles.to-handles.t)) + exp(-2*(handles.to-handles.t))).*u((handles.to-handles.t));
+    handles.ht_conv = 4*(-exp(-4*(handles.to-handles.t)) + exp(-2*(handles.to-handles.t))).*escalon((handles.to-handles.t));
 elseif get(handles.popupmenu2,'Value')==3
-    handles.ht_conv = 9*exp(-3*(handles.to-handles.t)) .* (handles.to-handles.t) .* u((handles.to-handles.t));
+    handles.ht_conv = 9*exp(-3*(handles.to-handles.t)) .* (handles.to-handles.t) .* escalon((handles.to-handles.t));
 else
-    handles.ht_conv = 9*exp(-3*(handles.to-handles.t)) .* sin(3*(handles.to-handles.t)) .* (handles.to-handles.t) .* u((handles.to-handles.t));
+    handles.ht_conv = 9*exp(-3*(handles.to-handles.t)) .* sin(3*(handles.to-handles.t)) .* (handles.to-handles.t) .* escalon((handles.to-handles.t));
 end
 graficar(handles)
 
