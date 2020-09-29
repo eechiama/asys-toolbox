@@ -15,8 +15,5 @@
 %	p:	potencia promedio de la señal periódica.
 %
 function [p] = POTENCIA_DFT(Xk)
-% asumo que la DFT de 1 ciclo de la señal periódica de N0 muestras es
-% también de N0 muestras.
-N0=length(Xk);
-p=(1/(N0^2))*sum(abs(Xk).^2);
+p=sum(abs(Xk).^2);
 end
