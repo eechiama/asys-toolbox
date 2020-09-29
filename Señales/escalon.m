@@ -5,4 +5,4 @@
 %Salida: u-> vector temporal u(t) o discreto u(n)
 %-------------------------------------------------------------
 function u=escalon(x)
-u=(x>=0);
+u=double(x>=0);
