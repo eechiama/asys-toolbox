@@ -22,7 +22,7 @@ function varargout = gui_stf(varargin)
 
 % Edit the above text to modify the response to help gui_stf
 
-% Last Modified by GUIDE v2.5 09-Nov-2020 12:42:11
+% Last Modified by GUIDE v2.5 09-Nov-2020 13:24:14
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -59,6 +59,18 @@ handles.output = hObject;
 guidata(hObject, handles);
 value = str2double(get(handles.edit_n,'String'));
 set(handles.slider1,'Value',value/20);
+handles.rb_a0 = get(handles.radiobutton_a0,'Value');
+handles.rb_an = get(handles.radiobutton_an,'Value');
+handles.rb_bn = get(handles.radiobutton_bn,'Value');
+
+% handles.N = str2double(get(handles.edit_n,'String'));;
+% handles.T0 = eval(get(handles.edit_T0,'String'));
+% handles.a0 = 0;
+% handles.an = 0;
+% handles.bn = 0;
+    
+guidata(hObject, handles);
+
 
 % UIWAIT makes gui_stf wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -158,6 +170,7 @@ processing(handles);
 
 
 
+
 % --- Executes during object creation, after setting all properties.
 function slider1_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to slider1 (see GCBO)
@@ -249,6 +262,7 @@ function button_run_Callback(hObject, eventdata, handles)
 processing(handles);
 
 
+
 function processing(handles)
     dt = eval(get(handles.edit_dt,'String'));
     ti = eval(get(handles.edit_ti,'String'));
@@ -278,14 +292,13 @@ function processing(handles)
         x_rec = x_rec + an(n)*cos(n*2*pi/T0*t) + bn(n)*sin(n*2*pi/T0*t);
     end
     
-    axes(handles.axes_func)
-    plot(t,x_p,'--b',t,x_rec,'r','linewidth',2), grid, axis tight
+    axes(handles.axes_func);
+    plot(t,x_p,'--b',t,x_rec,'r','linewidth',2), grid, axis tight;
     xlabel('Tiempo [s]'), ylabel('Amplitud'), legend('Analítica','Reconstrucción')
 
-    axes(handles.axes_fourier)
-    stem([0:N]*1/T0, [a0 an],'linewidth',2); hold, grid
-    stem([0:N]*1/T0, [0 bn],'linewidth',2); hold off,axis tight
-    xlabel('Frecuencia [Hz]'), ylabel('Amplitud'), legend('An','Bn')
+
+    
+    plot_stf(handles, N, T0, a0, an, bn)
     
 
 
@@ -299,14 +312,48 @@ function b = replace_t_to_t2(a)
 
     for i=1:length(a)+count-1
         if a(i) == 't'
-            aux = a(i+1:end)
-            a(i+1)='2'
-            a = [a(1:i+1) aux]
+            aux = a(i+1:end);
+            a(i+1)='2';
+            a = [a(1:i+1) aux];
             i = i-1;
         end
     end
     b = a;
 
+
+function plot_stf(handles, N, T0, a0, an, bn)
+    axes(handles.axes_fourier);
+    
+    an = abs(an);
+    bn = abs(bn);
+    
+    if handles.rb_a0 & handles.rb_an & handles.rb_bn
+        stem([0:N]*1/T0, [a0 an],'linewidth',2); hold; grid;
+        stem([0:N]*1/T0, [0 bn],'--','linewidth',2); hold off,axis tight;
+        xlabel('Frecuencia [Hz]'), ylabel('Amplitud'), legend('An','Bn');
+    elseif handles.rb_a0==1 & handles.rb_an==1 & handles.rb_bn==0
+        stem([0:N]*1/T0, [a0 an],'linewidth',2); grid;
+        xlabel('Frecuencia [Hz]'), ylabel('Amplitud'), legend('An');
+    elseif handles.rb_a0==1 & handles.rb_an==0 & handles.rb_bn==0
+        stem([0:N]*1/T0, [a0 zeros(1,N)],'linewidth',2); axis tight;, grid
+        xlabel('Frecuencia [Hz]'), ylabel('Amplitud'), legend('A0');
+    elseif handles.rb_a0==1 & handles.rb_an==0 & handles.rb_bn==1
+        stem([0:N]*1/T0, [0 bn],'linewidth',2); axis tight; grid
+        xlabel('Frecuencia [Hz]'), ylabel('Amplitud'), legend('A0','Bn');
+    elseif handles.rb_a0==0 & handles.rb_an==1 & handles.rb_bn==1
+        stem([0:N]*1/T0, [0 an],'linewidth',2); hold; grid;
+        stem([0:N]*1/T0, [0 bn],'--','linewidth',2); hold off,axis tight;
+        xlabel('Frecuencia [Hz]'), ylabel('Amplitud'), legend('An','Bn');
+    elseif handles.rb_a0==0 & handles.rb_an==1 & handles.rb_bn==0
+        stem([0:N]*1/T0, [0 an],'linewidth',2); grid;
+        xlabel('Frecuencia [Hz]'), ylabel('Amplitud'), legend('An');
+    elseif handles.rb_a0==0 & handles.rb_an==0 & handles.rb_bn==1
+        stem([0:N]*1/T0, [0 bn],'linewidth',2); axis tight; grid
+        xlabel('Frecuencia [Hz]'), ylabel('Amplitud'), legend('Bn');
+    else
+        stem([0:N]*1/T0, zeros(1,N+1)); grid
+    end
+        
 
 
 function edit_ti_p_Callback(hObject, eventdata, handles)
@@ -329,3 +376,37 @@ function edit_ti_p_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in radiobutton_a0.
+function radiobutton_a0_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton_a0 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of radiobutton_a0
+handles.rb_a0 = get(hObject,'Value');
+guidata(hObject, handles);
+
+
+% --- Executes on button press in radiobutton_an.
+function radiobutton_an_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton_an (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of radiobutton_an
+handles.rb_an = get(hObject,'Value');
+guidata(hObject, handles);
+
+
+
+% --- Executes on button press in radiobutton_bn.
+function radiobutton_bn_Callback(hObject, eventdata, handles)
+% hObject    handle to radiobutton_bn (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of radiobutton_bn
+handles.rb_bn = get(hObject,'Value');
+guidata(hObject, handles);
