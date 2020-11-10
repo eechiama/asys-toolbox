@@ -22,7 +22,7 @@ function varargout = gui_stf(varargin)
 
 % Edit the above text to modify the response to help gui_stf
 
-% Last Modified by GUIDE v2.5 09-Nov-2020 13:24:14
+% Last Modified by GUIDE v2.5 10-Nov-2020 15:50:49
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -111,21 +111,6 @@ end
 
 
 
-function edit_ti_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_ti (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_ti as text
-%        str2double(get(hObject,'String')) returns contents of edit_ti as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit_ti_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_ti (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
@@ -134,26 +119,9 @@ end
 
 
 
-function edit_tf_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_tf (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_tf as text
-%        str2double(get(hObject,'String')) returns contents of edit_tf as a double
 
 
-% --- Executes during object creation, after setting all properties.
-function edit_tf_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_tf (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
 
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
 
 
 % --- Executes on slider movement.
@@ -265,19 +233,26 @@ processing(handles);
 
 function processing(handles)
     dt = eval(get(handles.edit_dt,'String'));
-    ti = eval(get(handles.edit_ti,'String'));
-    tf = eval(get(handles.edit_tf,'String'));
-    t = ti:dt:tf;
 
+    ciclos = eval(get(handles.edit_ciclos,'String'));
+    
     T0 = eval(get(handles.edit_T0,'String'));
-    ti_p = eval(get(handles.edit_ti_p,'String'));
-    t2 = ti_p:dt:ti_p+T0;
-
+    ti = eval(get(handles.edit_ti,'String'));
+    t2 = ti:dt:ti+T0;
+    
+    if mod(ciclos,2)==0
+        t = ti-T0*(ciclos/2-1):dt:ti+T0*(ciclos/2+1);
+    else
+        t = ti-(ciclos-1)/2*T0:dt:ti+(ciclos+1)/2*T0;
+    end
+  
     x = eval(get(handles.edit_func,'String'));
     x_1p = eval(replace_t_to_t2(get(handles.edit_func,'String')));
 
     x_p = [];
-    for i = 1:(tf-ti)/T0+1
+    
+%   for i = 1:(tf-ti)/T0+1
+    for i = 1:ciclos
         x_p = [x_p x_1p];
     end
     x_p = x_p(1:length(t));
@@ -295,10 +270,13 @@ function processing(handles)
     axes(handles.axes_func);
     plot(t,x_p,'--b',t,x_rec,'r','linewidth',2), grid, axis tight;
     xlabel('Tiempo [s]'), ylabel('Amplitud'), legend('Analítica','Reconstrucción')
-
-
     
     plot_stf(handles, N, T0, a0, an, bn)
+    
+    Pt = POTENCIA(x_1p, T0, dt);
+    set(handles.text_Ptdisp,'String',num2str(Pt));
+    porcPt = POTENCIA(x_rec, ciclos*T0, dt);
+    set(handles.text_porcPtdisp,'String',num2str(porcPt/Pt*100));
     
 
 
@@ -356,18 +334,18 @@ function plot_stf(handles, N, T0, a0, an, bn)
         
 
 
-function edit_ti_p_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_ti_p (see GCBO)
+function edit_ti_Callback(hObject, eventdata, handles)
+% hObject    handle to edit_ti (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit_ti_p as text
-%        str2double(get(hObject,'String')) returns contents of edit_ti_p as a double
+% Hints: get(hObject,'String') returns contents of edit_ti as text
+%        str2double(get(hObject,'String')) returns contents of edit_ti as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function edit_ti_p_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_ti_p (see GCBO)
+function edit_ti_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit_ti (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -410,3 +388,26 @@ function radiobutton_bn_Callback(hObject, eventdata, handles)
 % Hint: get(hObject,'Value') returns toggle state of radiobutton_bn
 handles.rb_bn = get(hObject,'Value');
 guidata(hObject, handles);
+
+
+
+function edit_ciclos_Callback(hObject, eventdata, handles)
+% hObject    handle to edit_ciclos (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit_ciclos as text
+%        str2double(get(hObject,'String')) returns contents of edit_ciclos as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit_ciclos_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit_ciclos (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
