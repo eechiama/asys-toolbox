@@ -238,16 +238,16 @@ function processing(handles)
     
     T0 = eval(get(handles.edit_T0,'String'));
     ti = eval(get(handles.edit_ti,'String'));
-    t2 = ti:dt:ti+T0;
+    t = ti:dt:ti+T0;
     
     if mod(ciclos,2)==0
-        t = ti-T0*(ciclos/2-1):dt:ti+T0*(ciclos/2+1);
+        t_p = ti-T0*(ciclos/2-1):dt:ti+T0*(ciclos/2+1);
     else
-        t = ti-(ciclos-1)/2*T0:dt:ti+(ciclos+1)/2*T0;
+        t_p = ti-(ciclos-1)/2*T0:dt:ti+(ciclos+1)/2*T0;
     end
   
     x = eval(get(handles.edit_func,'String'));
-    x_1p = eval(replace_t_to_t2(get(handles.edit_func,'String')));
+    x_1p = eval(get(handles.edit_func,'String'));
 
     x_p = [];
     
@@ -255,20 +255,20 @@ function processing(handles)
     for i = 1:ciclos
         x_p = [x_p x_1p];
     end
-    x_p = x_p(1:length(t));
+    x_p = x_p(1:length(t_p));
 
     N = str2double(get(handles.edit_n,'String'));
-    a0 = STF_a0(t2,x_1p);
-    an = STF_an(N,t2,x_1p);
-    bn = STF_bn(N,t2,x_1p);
+    a0 = STF_a0(t,x_1p);
+    an = STF_an(N,t,x_1p);
+    bn = STF_bn(N,t,x_1p);
 
     x_rec = a0/2;
     for n=1:N
-        x_rec = x_rec + an(n)*cos(n*2*pi/T0*t) + bn(n)*sin(n*2*pi/T0*t);
+        x_rec = x_rec + an(n)*cos(n*2*pi/T0*t_p) + bn(n)*sin(n*2*pi/T0*t_p);
     end
     
     axes(handles.axes_func);
-    plot(t,x_p,'--b',t,x_rec,'r','linewidth',2), grid, axis tight;
+    plot(t_p,x_p,'--b',t_p,x_rec,'r','linewidth',2), grid, axis tight;
     xlabel('Tiempo [s]'), ylabel('Amplitud'), legend('Analítica','Reconstrucción')
     
     plot_stf(handles, N, T0, a0, an, bn)
