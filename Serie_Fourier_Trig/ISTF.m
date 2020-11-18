@@ -21,6 +21,8 @@
 function serie = ISTF( N, t, a0, an, bn, T0)
   
 %  T0 = t(end)-t(1);
+%  Mejor que lo defina el usuario:
+%  El argumento t es el tiempo que se reconstruye, que puede ser mayor a 1 ciclo.
   
   w0 = 2*pi/T0;
   

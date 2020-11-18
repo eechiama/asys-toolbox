@@ -1,7 +1,7 @@
 % STF_a0 -- Calcula el coeficiente 'a0' de la Serie Trigonométrica de Fourier
 %		de una señal periódica.
 %
-%	a0 = STF_a0(N, t, ft)
+%	a0 = STF_a0(t, ft)
 %
 % Argumentos
 % ==========
